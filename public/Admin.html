@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Match</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+padding:40px;
+}
+
+form{
+background:white;
+padding:20px;
+max-width:500px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+}
+
+button{
+padding:10px 20px;
+cursor:pointer;
+margin-right:10px;
+}
+
+.calc{
+font-weight:bold;
+margin-top:10px;
+}
+
+.clearBtn{
+background:red;
+color:white;
+border:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<form id="matchForm">
+
+<h2>Add Match</h2>
+
+<input id="league" placeholder="League">
+
+<input id="teamA" placeholder="Team A">
+
+<input id="logoA" placeholder="Team A Logo">
+
+<input id="teamB" placeholder="Team B">
+
+<input id="logoB" placeholder="Team B Logo">
+
+<input type="number" id="scoreA" placeholder="Score A">
+
+<input type="number" id="scoreB" placeholder="Score B">
+
+<input type="date" id="date">
+
+<input type="time" id="time">
+
+<h3>Set Odds</h3>
+
+<input type="number" step="0.01" id="winOdds" placeholder="Win Odds">
+
+<input type="number" step="0.01" id="drawOdds" placeholder="Draw Odds">
+
+<input type="number" step="0.01" id="loseOdds" placeholder="Lose Odds">
+
+<div class="calc" id="calcResult">
+Win 0% | Draw 0% | Lose 0%
+</div>
+
+<button type="submit">Save Match</button>
+
+<button type="button" class="clearBtn" onclick="clearMatches()">Clear All Matches</button>
+
+</form>
+
+<script>
+
+function calculateOdds(){
+
+const winOdds = parseFloat(document.getElementById("winOdds").value);
+const drawOdds = parseFloat(document.getElementById("drawOdds").value);
+const loseOdds = parseFloat(document.getElementById("loseOdds").value);
+
+if(!winOdds || !drawOdds || !loseOdds){
+return {winPercent:0,drawPercent:0,losePercent:0};
+}
+
+let winProb = 1 / winOdds;
+let drawProb = 1 / drawOdds;
+let loseProb = 1 / loseOdds;
+
+const total = winProb + drawProb + loseProb;
+
+winProb = ((winProb / total) * 100).toFixed(1);
+drawProb = ((drawProb / total) * 100).toFixed(1);
+loseProb = ((loseProb / total) * 100).toFixed(1);
+
+document.getElementById("calcResult").innerText =
+`Win ${winProb}% | Draw ${drawProb}% | Lose ${loseProb}%`;
+
+return {
+winPercent:winProb,
+drawPercent:drawProb,
+losePercent:loseProb
+};
+
+}
+
+document.getElementById("winOdds").oninput = calculateOdds;
+document.getElementById("drawOdds").oninput = calculateOdds;
+document.getElementById("loseOdds").oninput = calculateOdds;
+
+document.getElementById("matchForm").addEventListener("submit", async e => {
+
+e.preventDefault();
+
+const p = calculateOdds();
+
+const match = {
+
+league:league.value,
+teamA:teamA.value,
+logoA:logoA.value,
+teamB:teamB.value,
+logoB:logoB.value,
+
+scoreA:scoreA.value,
+scoreB:scoreB.value,
+
+date:date.value,
+time:time.value,
+
+winOdds:winOdds.value,
+drawOdds:drawOdds.value,
+loseOdds:loseOdds.value,
+
+winPercent:p.winPercent,
+drawPercent:p.drawPercent,
+losePercent:p.losePercent
+
+};
+
+await fetch("/add-match",{
+
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify(match)
+
+});
+
+alert("Match Saved");
+
+});
+
+/* CLEAR MATCHES */
+
+async function clearMatches(){
+
+if(!confirm("Delete ALL matches?")) return;
+
+await fetch("/clear-matches",{
+method:"DELETE"
+});
+
+alert("All matches deleted");
+
+}
+
+</script>
+
+</body>
+</html>
