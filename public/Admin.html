@@ -55,11 +55,11 @@ border:none;
 
 <input id="teamA" placeholder="Team A">
 
-<input id="logoA" placeholder="Team A Logo">
+<input id="logoA" placeholder="Team A Logo URL">
 
 <input id="teamB" placeholder="Team B">
 
-<input id="logoB" placeholder="Team B Logo">
+<input id="logoB" placeholder="Team B Logo URL">
 
 <input type="number" id="scoreA" placeholder="Score A">
 
@@ -130,27 +130,26 @@ e.preventDefault();
 
 const p = calculateOdds();
 
+/* FORMAT MATCH DATA EXACTLY HOW INDEX EXPECTS */
+
 const match = {
 
-league:league.value,
-teamA:teamA.value,
-logoA:logoA.value,
-teamB:teamB.value,
-logoB:logoB.value,
+league: league.value,
 
-scoreA:scoreA.value,
-scoreB:scoreB.value,
+teamA: teamA.value,
+teamA_logo: logoA.value,
 
-date:date.value,
-time:time.value,
+teamB: teamB.value,
+teamB_logo: logoB.value,
 
-winOdds:winOdds.value,
-drawOdds:drawOdds.value,
-loseOdds:loseOdds.value,
+predicted_score: scoreA.value + "-" + scoreB.value,
 
-winPercent:p.winPercent,
-drawPercent:p.drawPercent,
-losePercent:p.losePercent
+match_date: date.value,
+match_time: time.value,
+
+home_percentage: p.winPercent,
+draw_percentage: p.drawPercent,
+away_percentage: p.losePercent
 
 };
 

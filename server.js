@@ -1,49 +1,54 @@
 const express = require("express");
+const fs = require("fs");
 const path = require("path");
-const mysql = require("mysql2");
 
 const app = express();
 const PORT = 3000;
 
-app.use(express.json());
+/* MIDDLEWARE */
 
-/* SERVE HTML FILES FROM PUBLIC FOLDER */
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-/* MYSQL CONNECTION */
+/* JSON FILE */
 
-const db = mysql.createConnection({
-host: "localhost",
-user: "root",
-password: "",
-database: "geekhub_predictions"
-});
+const DATA_FILE = path.join(__dirname, "matches.json");
 
-db.connect(err => {
-if (err) {
-console.error("Database connection failed:", err);
-return;
+/* MEMORY STORAGE */
+
+let matches = [];
+
+/* LOAD DATA */
+
+if(fs.existsSync(DATA_FILE)){
+try{
+matches = JSON.parse(fs.readFileSync(DATA_FILE));
+}catch(err){
+matches = [];
 }
-console.log("Connected to MySQL");
-});
+}
+
+/* SAVE FUNCTION */
+
+function saveMatches(){
+fs.writeFileSync(DATA_FILE, JSON.stringify(matches,null,2));
+}
 
 /* GET MATCHES */
 
 app.get("/matches",(req,res)=>{
 
-const sql="SELECT * FROM matches ORDER BY match_date, match_time";
+const date = req.query.date;
 
-db.query(sql,(err,results)=>{
+if(date){
 
-if(err){
-console.log(err);
-res.status(500).send("Database error");
-return;
+const filtered = matches.filter(m => m.match_date === date);
+
+return res.json(filtered);
+
 }
 
-res.json(results);
-
-});
+res.json(matches);
 
 });
 
@@ -51,65 +56,34 @@ res.json(results);
 
 app.post("/add-match",(req,res)=>{
 
-const {
-league,
-teamA,
-logoA,
-teamB,
-logoB,
-scoreA,
-scoreB,
-date,
-time,
-winOdds,
-drawOdds,
-loseOdds,
-winPercent,
-drawPercent,
-losePercent
-}=req.body;
+const match = req.body;
 
-const predicted_score=`${scoreA}-${scoreB}`;
+match.id = Date.now();
 
-const sql=`
-INSERT INTO matches
-(league,teamA,teamA_logo,teamB,teamB_logo,predicted_score,
-match_date,match_time,odds_home,odds_draw,odds_away,
-home_percentage,draw_percentage,away_percentage)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-`;
+matches.push(match);
 
-db.query(sql,[
-league,
-teamA,
-logoA,
-teamB,
-logoB,
-predicted_score,
-date,
-time,
-winOdds,
-drawOdds,
-loseOdds,
-winPercent,
-drawPercent,
-losePercent
-],(err,result)=>{
+saveMatches();
 
-if(err){
-console.log(err);
-res.status(500).send("Insert error");
-return;
-}
-
-res.json({message:"Match added successfully"});
+res.json({success:true});
 
 });
+
+/* CLEAR MATCHES */
+
+app.delete("/clear-matches",(req,res)=>{
+
+matches = [];
+
+saveMatches();
+
+res.json({success:true});
 
 });
 
 /* SERVER */
 
 app.listen(PORT,()=>{
-console.log(`Server running at http://localhost:${PORT}`);
+
+console.log("Server running on http://localhost:3000");
+
 });

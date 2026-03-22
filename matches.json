@@ -1,0 +1,44 @@
+[
+  {
+    "league": "La Liga",
+    "teamA": "Real Madrid",
+    "teamA_logo": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+    "teamB": "Barcelona",
+    "teamB_logo": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+    "predicted_score": "1-1",
+    "match_date": "2026-03-22",
+    "match_time": "09:20",
+    "home_percentage": "20.0",
+    "draw_percentage": "40.0",
+    "away_percentage": "40.0",
+    "id": 1774189245741
+  },
+  {
+    "league": "La Liga",
+    "teamA": "Asernal",
+    "teamA_logo": "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
+    "teamB": "Manchester City",
+    "teamB_logo": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+    "predicted_score": "1-1",
+    "match_date": "2026-03-22",
+    "match_time": "20:21",
+    "home_percentage": "33.3",
+    "draw_percentage": "33.3",
+    "away_percentage": "33.3",
+    "id": 1774189328777
+  },
+  {
+    "league": "Premier League",
+    "teamA": "Paris Saint-Germain",
+    "teamA_logo": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
+    "teamB": "Napoli",
+    "teamB_logo": "https://upload.wikimedia.org/wikipedia/commons/2/2d/SSC_Neapel_Logo.svg",
+    "predicted_score": "2-1",
+    "match_date": "2026-03-22",
+    "match_time": "22:45",
+    "home_percentage": "23.1",
+    "draw_percentage": "23.1",
+    "away_percentage": "53.8",
+    "id": 1774190717635
+  }
+]
